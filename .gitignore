@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+*.log
+*.tmp
+.DS_Store
+.idea
+*.xlsx
+data.json
+Parser.bat

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Notes App</title>
+  <link rel="shortcut icon" href="./icon.png" type="image/x-icon"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <script src="./script/notes.js"></script>
+</head>
+
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="search-container">
+        <input type="text" id="search-input" placeholder="🔍 Поиск по заметкам..." class="search-input">
+      </div>
+      <div class="header-actions">
+        <button id="theme-toggle" class="theme-toggle" title="Переключить тему">🌙</button>
+        <button id="add-note-btn" class="btn btn-primary">➕ Новая заметка</button>
+        <button id="toggle-visibility-btn" class="btn btn-secondary">👁️ Показать</button>
+      </div>
+    </header>
+
+    <!-- Categories -->
+    <div class="categories-container">
+      <div class="categories-list" id="categories-list">
+        <!-- Categories will be populated here -->
+      </div>
+      <button id="add-category-btn" class="btn btn-small">➕ Категория</button>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Notes List -->
+      <section class="notes-list-section">
+        <div class="notes-list" id="notes-list">
+          <!-- Notes will be populated here -->
+        </div>
+      </section>
+
+      <!-- Note Details -->
+      <section class="note-details-section">
+        <div class="note-details" id="note-details">
+          <div class="note-details-placeholder">
+            <p>Выберите заметку для просмотра</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Add/Edit Note Modal -->
+  <div id="note-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">Новая заметка</h3>
+        <button id="close-modal" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="note-title">Название:</label>
+          <input type="text" id="note-title" class="form-input" placeholder="Введите название заметки">
+        </div>
+        <div class="form-group">
+          <label for="note-category">Категория:</label>
+          <select id="note-category" class="form-input">
+            <option value="all">Все</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="note-login">Логин (опционально):</label>
+          <input type="text" id="note-login" class="form-input" placeholder="Введите логин">
+        </div>
+        <div class="form-group">
+          <label for="note-password">Пароль (опционально):</label>
+          <div class="password-input-container">
+            <input type="password" id="note-password" class="form-input" placeholder="Введите пароль">
+            <button type="button" id="toggle-password" class="password-toggle">👁️</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="note-content">Содержимое:</label>
+          <textarea id="note-content" class="form-textarea" placeholder="Введите содержимое заметки"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="save-note" class="btn btn-primary">Сохранить</button>
+        <button id="cancel-note" class="btn btn-secondary">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Category Modal -->
+  <div id="category-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Новая категория</h3>
+        <button id="close-category-modal" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="category-name">Название категории:</label>
+          <input type="text" id="category-name" class="form-input" placeholder="Введите название категории">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="save-category" class="btn btn-primary">Сохранить</button>
+        <button id="cancel-category" class="btn btn-secondary">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Move to Category Modal -->
+  <div id="move-category-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Переместить в категорию</h3>
+        <button id="close-move-modal" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="move-category-select">Выберите категорию:</label>
+          <select id="move-category-select" class="form-input">
+            <!-- Categories will be populated here -->
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="confirm-move" class="btn btn-primary">Переместить</button>
+        <button id="cancel-move" class="btn btn-secondary">Отмена</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
