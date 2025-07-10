@@ -82,12 +82,15 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+  overflow-x: hidden; /* Предотвращаем горизонтальную прокрутку */
 }
 
 .app-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  width: 100%; /* Используем всю доступную ширину */
   background: var(--bg-primary);
   transition: background-color 0.3s ease;
 }
@@ -106,7 +109,7 @@ body {
 
 .search-container {
   flex: 1;
-  max-width: 400px;
+  max-width: none; /* Убираем ограничение максимальной ширины */
 }
 
 .search-input {
@@ -237,7 +240,8 @@ body {
 }
 
 .notes-list-section {
-  width: 300px;
+  min-width: 300px; /* Минимальная ширина вместо фиксированной */
+  width: 25%; /* Процентная ширина для пропорционального расширения */
   border-right: 1px solid var(--border-color);
   background: var(--bg-secondary);
   overflow-y: auto;
@@ -346,6 +350,7 @@ body {
   flex: 1;
   padding: 1.5rem;
   overflow-y: auto;
+  overflow-x: hidden; /* Убираем горизонтальную прокрутку */
   background: var(--bg-primary);
   transition: background-color 0.3s ease;
 }
@@ -358,8 +363,11 @@ body {
 }
 
 .note-details-content {
-  max-width: 800px;
+  width: 100%; /* Используем всю доступную ширину */
+  max-width: 100%; /* Ограничиваем максимальную ширину */
   position: relative;
+  word-wrap: break-word; /* Перенос длинных слов */
+  overflow-wrap: break-word; /* Современный способ переноса */
 }
 
 .note-details-header {
@@ -379,9 +387,10 @@ body {
 
 .note-details-title-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Изменено с center на flex-start */
   gap: 0.5rem;
   margin-bottom: 0.5rem;
+  flex-wrap: wrap; /* Перенос на новую строку при необходимости */
 }
 
 .note-details-title {
@@ -391,12 +400,16 @@ body {
   margin: 0;
   line-height: 1.2;
   flex: 1;
+  word-wrap: break-word; /* Перенос длинных слов */
+  overflow-wrap: break-word; /* Современный способ переноса */
 }
 
 .note-details-actions {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+  flex-shrink: 0; /* Кнопки не сжимаются */
+  align-items: flex-start; /* Выравнивание по верху */
 }
 
 .note-field {
@@ -419,63 +432,84 @@ body {
   border: 1px solid var(--border-color);
   border-radius: 8px;
   font-family: 'Courier New', monospace;
-    position: relative;
+  position: relative;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start; /* Изменено с center на flex-start */
   color: var(--text-primary);
   transition: background-color 0.3s ease, border-color 0.3s ease;
   box-shadow: var(--elevation-1);
+  word-wrap: break-word; /* Перенос длинных слов */
+  overflow-wrap: break-word; /* Современный способ переноса */
+  min-height: 44px; /* Минимальная высота для кнопок */
 }
 
-.note-field-value.hidden {
+.note-field-value > span {
+  flex: 1; /* Текст занимает доступное пространство */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap; /* Сохраняем переносы строк */
+  margin-right: 0.5rem; /* Отступ от кнопок */
+}
+
+.note-field-value > span.hidden {
   color: transparent;
   text-shadow: 0 0 8px var(--shadow);
 }
 
-.note-field-value.hidden::before {
+.note-field-value > span.hidden::before {
   content: '••••••••••••••••';
   color: var(--text-primary);
 }
 
 .copy-btn {
-  background: #6b7280;
-  color: #f9fafb;
+  background: var(--accent-secondary);
+  color: var(--text-primary);
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 12px;
+  padding: 0.75rem 1.25rem; /* Увеличиваем padding */
+  border-radius: 20px; /* Увеличиваем радиус */
+  font-size: 14px; /* Увеличиваем размер шрифта */
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  flex-shrink: 0; /* Кнопка не сжимается */
+  white-space: nowrap; /* Текст не переносится */
+  margin-left: 20px; /* Отступ от текста */
+  min-width: 60px; /* Минимальная ширина */
+  min-height: 44px; /* Минимальная высота */
 }
 
 .copy-btn:hover {
-  background: #4b5563;
+  background: var(--accent-secondary-hover);
   transform: translateY(-1px);
-  box-shadow: var(--elevation-1);
+  box-shadow: var(--elevation-2);
 }
 
 .toggle-visibility-btn {
-  background: #6b7280;
-  color: #f9fafb;
+  background: var(--accent-secondary);
+  color: var(--text-primary);
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 12px;
+  padding: 0.75rem 1.25rem; /* Увеличиваем padding */
+  border-radius: 20px; /* Увеличиваем радиус */
+  font-size: 14px; /* Увеличиваем размер шрифта */
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  flex-shrink: 0; /* Кнопка не сжимается */
+  white-space: nowrap; /* Текст не переносится */
+  margin-left: 20px; /* Отступ от кнопки копирования */
+  min-width: 60px; /* Минимальная ширина */
+  min-height: 44px; /* Минимальная высота */
 }
 
 .toggle-visibility-btn:hover {
-  background: #4b5563;
+  background: var(--accent-secondary-hover);
   transform: translateY(-1px);
-  box-shadow: var(--elevation-1);
+  box-shadow: var(--elevation-2);
 }
 
 /* Buttons */
@@ -740,6 +774,7 @@ body {
   
   .notes-list-section {
     width: 100%;
+    min-width: auto;
     height: 200px;
   }
   
@@ -1044,6 +1079,11 @@ body {
   box-shadow: var(--elevation-1);
   transition: all 0.2s ease;
   font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 0.75rem 1.25rem; /* Увеличиваем padding */
+  font-size: 14px; /* Увеличиваем размер шрифта */
+  margin-left: 20px; /* Отступ от текста */
+  min-width: 60px; /* Минимальная ширина */
+  min-height: 44px; /* Минимальная высота */
 }
 
 [data-theme="dark"] .copy-btn:hover {
@@ -1064,6 +1104,11 @@ body {
   box-shadow: var(--elevation-1);
   transition: all 0.2s ease;
   font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 0.75rem 1.25rem; /* Увеличиваем padding */
+  font-size: 14px; /* Увеличиваем размер шрифта */
+  margin-left: 20px; /* Отступ от кнопки копирования */
+  min-width: 60px; /* Минимальная ширина */
+  min-height: 44px; /* Минимальная высота */
 }
 
 [data-theme="dark"] .toggle-visibility-btn:hover {
@@ -1452,4 +1497,14 @@ body {
 .favorite-btn-details.favorite-active:hover {
   color: #ffed4e;
   background: var(--bg-tertiary);
+}  
+
+[data-theme="dark"] .note-field-value > span.hidden {
+  color: transparent;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .note-field-value > span.hidden::before {
+  content: '••••••••••••••••';
+  color: #ffffff;
 }  

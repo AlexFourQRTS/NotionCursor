@@ -42,6 +42,10 @@
       {
         "from": "data.json",
         "to": "data.json"
+      },
+      {
+        "from": "category.json",
+        "to": "category.json"
       }
     ],
     "win": {
