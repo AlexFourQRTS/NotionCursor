@@ -29,10 +29,10 @@ class UIManager {
   updateThemeButton() {
     const themeBtn = document.getElementById('theme-toggle');
     if (this.isDarkMode) {
-      themeBtn.textContent = '☀️';
+      themeBtn.textContent = '☽';
       themeBtn.title = 'Переключить на светлую тему';
     } else {
-      themeBtn.textContent = '🌙';
+      themeBtn.textContent = '☀';
       themeBtn.title = 'Переключить на темную тему';
     }
   }
@@ -63,15 +63,18 @@ class UIManager {
 
   getCategoryIcon(category) {
     const icons = {
-      'Все': '📋',
-      'Пароли': '🔐',
+        'Все': '⌘',
+      'Пароли': '⚙︎',
       'Команды': '⚡',
       'Заметки': '📝',
-      'Избранное': '⭐',
-      'Архив': '📦'
+      'Избранное': '★',
+      'Архив': '⊞'
     };
-    return icons[category] || '📁';
+    return icons[category] || '🗄︎';
   }
+
+
+
 
   selectCategory(category) {
     this.currentCategory = category;
@@ -126,7 +129,7 @@ class UIManager {
           <h3 class="note-title">${note.title}</h3>
           <button class="favorite-btn ${note.isFavorite ? 'favorite-active' : ''}" 
                   onclick="notesApp.toggleFavorite('${note.id}')">
-            ${note.isFavorite ? '⭐' : '☆'}
+            ${note.isFavorite ? '★' : '☆'}
           </button>
         </div>
         <p class="note-preview">${this.truncateText(note.content, 100)}</p>
@@ -166,13 +169,13 @@ class UIManager {
               <h2 class="note-details-title">${this.currentNote.title}</h2>
               <button class="favorite-btn-details ${this.currentNote.isFavorite ? 'favorite-active' : ''}" 
                       onclick="notesApp.toggleFavorite('${this.currentNote.id}')">
-                ${this.currentNote.isFavorite ? '⭐' : '☆'}
+                ${this.currentNote.isFavorite ? '★' : '☆'}
               </button>
             </div>
             <div class="note-details-actions">
-              <button class="btn btn-secondary" onclick="notesApp.editNote()">✏️ Редактировать</button>
-              <button class="btn btn-warning" onclick="notesApp.showMoveModal()">📁 Переместить</button>
-              <button class="btn btn-danger" onclick="notesApp.deleteNote()">🗑️ Удалить</button>
+              <button class="btn btn-secondary" onclick="notesApp.editNote()"> ✎  Редактировать</button>
+              <button class="btn btn-secondary" onclick="notesApp.showMoveModal()"> ➤ Переместить</button>
+              <button class="btn btn-danger" onclick="notesApp.deleteNote()"> ● Удалить</button>
             </div>
           </div>
         </div>
@@ -208,7 +211,7 @@ class UIManager {
         
         <div class="note-bottom-actions">
           <button class="btn btn-secondary" onclick="notesApp.toggleArchive()">
-            ${this.currentNote.isArchived ? '📤 Разархивировать' : '📦 Архивировать'}
+            ${this.currentNote.isArchived ? '✉︎ Разархивировать' : '☰ Архивировать'}
           </button>
         </div>
       </div>

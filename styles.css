@@ -72,7 +72,7 @@
 /* Reset and base styles */
 * {
   margin: 0;
-  padding: 0;
+  padding: 2;
   box-sizing: border-box;
 }
 
@@ -1133,6 +1133,8 @@ body {
   min-width: 44px;
   min-height: 44px;
   box-shadow: var(--elevation-1);
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 [data-theme="dark"] .theme-toggle:hover {

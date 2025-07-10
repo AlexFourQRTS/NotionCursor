@@ -197,22 +197,20 @@ class ModalManager {
     modal.innerHTML = `
       <div class="modal-content delete-confirmation-modal">
         <div class="modal-header">
-          <h3>⚠️ Подтверждение удаления</h3>
+          <h3>● Подтверждение удаления</h3>
           <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
         </div>
         <div class="modal-body">
-          <div class="delete-warning">
-            <p><strong>Вы собираетесь удалить заметку:</strong></p>
-            <p class="note-title-to-delete">"${currentNote.title}"</p>
-            <p>Это действие <strong>необратимо</strong> и удалит заметку навсегда.</p>
+          <div>
+          <p class="note-title-to-delete">"${currentNote.title}"</p>
           </div>
           <div class="form-group">
-            <label for="delete-confirmation-input">Для подтверждения введите слово <strong>"уверен"</strong>:</label>
-            <input type="text" id="delete-confirmation-input" class="form-input" placeholder="уверен">
+            <div>Для подтверждения введите : 1</div>
+            <input type="text" id="delete-confirmation-input" class="form-input" placeholder="1">
           </div>
         </div>
         <div class="modal-footer">
-          <button id="confirm-delete-btn" class="btn btn-danger" disabled>🗑️ Удалить навсегда</button>
+          <button id="confirm-delete-btn" class="btn btn-danger" disabled>◆ Удалить</button>
           <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Отмена</button>
         </div>
       </div>
@@ -224,11 +222,11 @@ class ModalManager {
     const confirmBtn = modal.querySelector('#confirm-delete-btn');
     
     input.addEventListener('input', () => {
-      confirmBtn.disabled = input.value !== 'уверен';
+      confirmBtn.disabled = input.value !== '1';
     });
     
     confirmBtn.addEventListener('click', async () => {
-      if (input.value === 'уверен') {
+      if (input.value === '1') {
         this.dataManager.deleteNote(currentNote.id);
         await this.dataManager.saveData();
         this.uiManager.setCurrentNote(null);
