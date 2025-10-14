@@ -27,7 +27,7 @@ class UIManager {
   }
 
   updateThemeButton() {
-    const themeBtn = document.getElementById('theme-toggle');
+    const themeBtn = document.getElementById('settings-btn');
     if (this.isDarkMode) {
       themeBtn.textContent = '☽';
       themeBtn.title = 'Переключить на светлую тему';
@@ -124,11 +124,13 @@ class UIManager {
     this.filteredNotes.forEach(note => {
       const noteElement = document.createElement('div');
       noteElement.className = `note-item ${note.id === this.currentNote?.id ? 'selected' : ''}`;
+      // ✅ Добавляем data-атрибуты для Event Delegation
+      noteElement.dataset.noteId = note.id;
       noteElement.innerHTML = `
         <div class="note-header">
           <h3 class="note-title">${note.title}</h3>
           <button class="favorite-btn ${note.isFavorite ? 'favorite-active' : ''}" 
-                  onclick="notesApp.toggleFavorite('${note.id}')">
+                  data-action="toggle-favorite" data-note-id="${note.id}">
             ${note.isFavorite ? '★' : '☆'}
           </button>
         </div>
@@ -138,14 +140,28 @@ class UIManager {
           <span>${this.formatDate(note.createdAt)}</span>
         </div>
       `;
-      noteElement.addEventListener('click', () => this.selectNote(note));
+      // ✅ УБИРАЕМ addEventListener - больше не нужно!
       container.appendChild(noteElement);
     });
   }
 
   selectNote(note) {
+    // ✅ ОПТИМИЗАЦИЯ: Обновляем только классы selected, без полного перерендера!
+    
+    // Убираем selected у предыдущей заметки
+    const previousSelected = document.querySelector('.note-item.selected');
+    if (previousSelected) {
+      previousSelected.classList.remove('selected');
+    }
+    
+    // Добавляем selected к новой заметке
+    const newSelected = document.querySelector(`[data-note-id="${note.id}"]`);
+    if (newSelected) {
+      newSelected.classList.add('selected');
+    }
+    
     this.currentNote = note;
-    this.renderNotes();
+    // ✅ Рендерим только детали, не весь список!
     this.renderNoteDetails();
   }
 
@@ -162,20 +178,20 @@ class UIManager {
     }
     
     container.innerHTML = `
-      <div class="note-details-content">
+      <div class="note-details-content" data-note-id="${this.currentNote.id}">
         <div class="note-details-header">
           <div class="note-details-title-section">
             <div class="note-details-title-row">
               <h2 class="note-details-title">${this.currentNote.title}</h2>
               <button class="favorite-btn-details ${this.currentNote.isFavorite ? 'favorite-active' : ''}" 
-                      onclick="notesApp.toggleFavorite('${this.currentNote.id}')">
+                      data-action="toggle-favorite" data-note-id="${this.currentNote.id}">
                 ${this.currentNote.isFavorite ? '★' : '☆'}
               </button>
             </div>
             <div class="note-details-actions">
-              <button class="btn btn-secondary" onclick="notesApp.editNote()"> ✎  Редактировать</button>
-              <button class="btn btn-secondary" onclick="notesApp.showMoveModal()"> ➤ Переместить</button>
-              <button class="btn btn-danger" onclick="notesApp.deleteNote()"> ● Удалить</button>
+              <button class="btn btn-secondary" data-action="edit-note"> ✎  Редактировать</button>
+              <button class="btn btn-secondary" data-action="show-move-modal"> ➤ Переместить</button>
+              <button class="btn btn-danger" data-action="delete-note"> ● Удалить</button>
             </div>
           </div>
         </div>
@@ -185,7 +201,7 @@ class UIManager {
             <label class="note-field-label">Логин:</label>
             <div class="note-field-value">
               <span>${this.currentNote.login}</span>
-              <button class="copy-btn" onclick="notesApp.copyToClipboard('${this.currentNote.login}')">📋</button>
+              <button class="copy-btn" data-action="copy-to-clipboard" data-text="${this.escapeHtml(this.currentNote.login)}">📋</button>
             </div>
           </div>
         ` : ''}
@@ -195,8 +211,8 @@ class UIManager {
             <label class="note-field-label">Пароль:</label>
             <div class="note-field-value">
               <span class="hidden">${this.currentNote.password}</span>
-              <button class="copy-btn" onclick="notesApp.copyToClipboard('${this.currentNote.password}')">📋</button>
-              <button class="toggle-visibility-btn" onclick="notesApp.toggleFieldVisibility(this)">👁️</button>
+              <button class="copy-btn" data-action="copy-to-clipboard" data-text="${this.escapeHtml(this.currentNote.password)}">📋</button>
+              <button class="toggle-visibility-btn" data-action="toggle-field-visibility">👁️</button>
             </div>
           </div>
         ` : ''}
@@ -205,12 +221,12 @@ class UIManager {
           <label class="note-field-label">Содержимое:</label>
           <div class="note-field-value">
             <span>${this.currentNote.content}</span>
-            <button class="copy-btn" onclick="notesApp.copyToClipboard('${this.currentNote.content}')">📋</button>
+            <button class="copy-btn" data-action="copy-to-clipboard" data-text="${this.escapeHtml(this.currentNote.content)}">📋</button>
           </div>
         </div>
         
         <div class="note-bottom-actions">
-          <button class="btn btn-secondary" onclick="notesApp.toggleArchive()">
+          <button class="btn btn-secondary" data-action="toggle-archive">
             ${this.currentNote.isArchived ? '✉︎ Разархивировать' : '☰ Архивировать'}
           </button>
         </div>
@@ -300,6 +316,13 @@ class UIManager {
 
   setFilteredNotes(notes) {
     this.filteredNotes = notes;
+  }
+
+  // ✅ Метод для экранирования HTML символов в data-атрибутах
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
   }
 }
 

@@ -6,8 +6,8 @@ class EventManager {
   }
 
   setupEventListeners() {
-    // Переключение темы
-    document.getElementById('theme-toggle').addEventListener('click', () => {
+    // Переключение темы (исправленный ID)
+    document.getElementById('settings-btn').addEventListener('click', () => {
       this.uiManager.toggleTheme();
     });
 
@@ -19,6 +19,106 @@ class EventManager {
     // Кнопки в заголовке
     document.getElementById('add-note-btn').addEventListener('click', () => {
       this.modalManager.showNoteModal();
+    });
+
+    // ✅ Кнопка DevTools
+    document.getElementById('devtools-btn').addEventListener('click', async () => {
+      if (window.electronAPI && window.electronAPI.openDevTools) {
+        try {
+          const result = await window.electronAPI.openDevTools();
+          if (!result.success) {
+            console.error('Failed to open DevTools:', result.error);
+            // Fallback - пробуем открыть через F12
+            document.dispatchEvent(new KeyboardEvent('keydown', {
+              key: 'F12',
+              code: 'F12',
+              keyCode: 123
+            }));
+          }
+        } catch (error) {
+          console.error('Error opening DevTools:', error);
+        }
+      } else {
+        // Если electron API недоступен, показываем инструкцию
+        alert('Нажмите F12 для открытия DevTools или откройте через контекстное меню');
+      }
+    });
+
+    // ✅ EVENT DELEGATION для списка заметок (вместо множества addEventListener)
+    document.getElementById('notes-list').addEventListener('click', (e) => {
+      // Обработка кнопки избранного
+      if (e.target.matches('[data-action="toggle-favorite"]')) {
+        e.stopPropagation(); // Предотвращаем выбор заметки
+        const noteId = e.target.dataset.noteId;
+        if (window.notesApp) {
+          window.notesApp.toggleFavorite(noteId);
+        }
+        return;
+      }
+
+      // Обработка клика по заметке (выбор заметки)
+      const noteItem = e.target.closest('.note-item');
+      if (noteItem && noteItem.dataset.noteId) {
+        const noteId = noteItem.dataset.noteId;
+        const note = this.dataManager.getNotes().find(n => n.id === noteId);
+        if (note) {
+          this.uiManager.selectNote(note);
+        }
+      }
+    });
+
+    // ✅ EVENT DELEGATION для деталей заметки (вместо inline onclick)
+    document.getElementById('note-details').addEventListener('click', (e) => {
+      const action = e.target.dataset.action;
+      if (!action) return;
+
+      switch (action) {
+        case 'toggle-favorite':
+          const noteId = e.target.dataset.noteId;
+          if (window.notesApp) {
+            window.notesApp.toggleFavorite(noteId);
+          }
+          break;
+
+        case 'edit-note':
+          if (window.notesApp) {
+            window.notesApp.editNote();
+          }
+          break;
+
+        case 'show-move-modal':
+          if (window.notesApp) {
+            window.notesApp.showMoveModal();
+          }
+          break;
+
+        case 'delete-note':
+          if (window.notesApp) {
+            window.notesApp.deleteNote();
+          }
+          break;
+
+        case 'copy-to-clipboard':
+          const textToCopy = e.target.dataset.text;
+          if (textToCopy && window.notesApp) {
+            // ✅ Декодируем HTML entities обратно в обычный текст
+            const decodedText = this.decodeHtml(textToCopy);
+            window.notesApp.copyToClipboard(decodedText);
+          }
+          break;
+
+        case 'toggle-field-visibility':
+          if (window.notesApp) {
+            window.notesApp.toggleFieldVisibility(e.target);
+          }
+          break;
+
+        case 'toggle-archive':
+          if (window.notesApp) {
+            window.notesApp.toggleArchive();
+          }
+          break;
+      }
     });
 
     // Категории
@@ -243,6 +343,13 @@ class EventManager {
       console.error('Ошибка импорта:', error);
       this.uiManager.showNotification('Ошибка импорта данных', 'error');
     }
+  }
+
+  // ✅ Метод для декодирования HTML entities обратно в обычный текст
+  decodeHtml(html) {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    return txt.value;
   }
 }
 

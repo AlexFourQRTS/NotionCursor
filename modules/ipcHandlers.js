@@ -151,6 +151,22 @@ class IPCHandlers {
         return { success: false, error: error.message };
       }
     });
+
+    // ✅ Обработчик для открытия DevTools
+    ipcMain.handle('open-devtools', async () => {
+      try {
+        const BrowserWindow = require('electron').BrowserWindow;
+        const focusedWindow = BrowserWindow.getFocusedWindow();
+        if (focusedWindow) {
+          focusedWindow.webContents.openDevTools();
+          return { success: true };
+        }
+        return { success: false, error: 'No focused window' };
+      } catch (error) {
+        console.error('Error opening DevTools:', error);
+        return { success: false, error: error.message };
+      }
+    });
   }
 }
 

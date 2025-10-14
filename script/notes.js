@@ -13,16 +13,35 @@ class NotesApp {
   }
 
   async init() {
-    this.uiManager.loadTheme();
-    await this.dataManager.loadCategories();
-    await this.dataManager.loadData();
-    this.uiManager.setFilteredNotes(await this.dataManager.loadData());
-    
-    this.eventManager.setupEventListeners();
-    this.eventManager.setupContextMenuListeners();
-    
-    this.uiManager.renderCategories();
-    this.uiManager.renderNotes();
+    try {
+      console.log('🚀 NotesApp: Начинаем инициализацию...');
+      
+      console.log('🎨 NotesApp: Загружаем тему...');
+      this.uiManager.loadTheme();
+      
+      console.log('📁 NotesApp: Загружаем категории...');
+      await this.dataManager.loadCategories();
+      
+      console.log('📝 NotesApp: Загружаем заметки...');
+      // ✅ Загружаем данные только ОДИН раз!
+      const notes = await this.dataManager.loadData();
+      this.uiManager.setFilteredNotes(notes);
+      console.log(`📝 NotesApp: Загружено ${notes.length} заметок`);
+      
+      console.log('⚡ NotesApp: Настраиваем события...');
+      this.eventManager.setupEventListeners();
+      this.eventManager.setupContextMenuListeners();
+      
+      console.log('🎨 NotesApp: Рендерим интерфейс...');
+      this.uiManager.renderCategories();
+      this.uiManager.renderNotes();
+      
+      console.log('✅ NotesApp: Инициализация завершена успешно!');
+    } catch (error) {
+      console.error('❌ NotesApp: Ошибка при инициализации:', error);
+      console.error('❌ Stack trace:', error.stack);
+      throw error;
+    }
   }
 
   // Методы для работы с заметками
@@ -142,7 +161,17 @@ let notesApp;
 
 // Инициализируем приложение после загрузки DOM
 document.addEventListener('DOMContentLoaded', async () => {
-  notesApp = new NotesApp();
+  try {
+    console.log('🌟 DOM загружен, создаем NotesApp...');
+    notesApp = new NotesApp();
+    // ✅ Делаем доступным глобально для event delegation
+    window.notesApp = notesApp;
+    console.log('🌟 NotesApp создан и доступен в window.notesApp');
+  } catch (error) {
+    console.error('💥 КРИТИЧЕСКАЯ ОШИБКА при создании NotesApp:', error);
+    console.error('💥 Stack trace:', error.stack);
+    alert('Критическая ошибка при запуске приложения! Откройте DevTools (F12) и посмотрите консоль.');
+  }
 });
 
 // Экспортируем для использования в других модулях

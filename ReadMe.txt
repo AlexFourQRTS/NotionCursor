@@ -1,3 +1,3 @@
-npm i - to install all modyle
-node App.js - run parser
-App.js - general file
+npm i - установить зависимости
+npm start - запустить приложение Notes App
+main.js - главный файл Electron приложения
