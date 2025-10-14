@@ -7,7 +7,6 @@ class ContextMenu {
   }
 
   setupContextMenu() {
-    // Создаем кастомное контекстное меню
     const contextMenu = Menu.buildFromTemplate([
       {
         label: 'Новая заметка',
@@ -108,12 +107,10 @@ class ContextMenu {
       }
     ]);
 
-    // Применяем контекстное меню
     this.mainWindow.webContents.on('context-menu', (e, params) => {
       contextMenu.popup({ window: this.mainWindow });
     });
 
-    // Обработка действий из контекстного меню
     this.mainWindow.webContents.on('context-menu-action', (event, action) => {
       switch (action) {
         case 'new-note':

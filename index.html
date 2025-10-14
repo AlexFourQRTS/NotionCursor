@@ -6,20 +6,15 @@
   <link rel="shortcut icon" href="./icon.png" type="image/x-icon"/>
   <link rel="stylesheet" href="styles.css"/>
 
-
-
-  <!-- Модули -->
   <script src="./script/modules/dataManager.js"></script>
   <script src="./script/modules/uiManager.js"></script>
   <script src="./script/modules/modalManager.js"></script>
   <script src="./script/modules/eventManager.js"></script>
-  <!-- Основной файл приложения -->
   <script src="./script/notes.js"></script>
 </head>
 
 <body>
   <div class="app-container">
-    <!-- Header -->
     <header class="header">
       <div class="search-container">
         <input type="text" id="search-input" placeholder=" ⌕ Поиск по заметкам..." class="search-input">
@@ -31,24 +26,18 @@
       </div>
     </header>
 
-    <!-- Categories -->
     <div class="categories-container">
       <div class="categories-list" id="categories-list">
-        <!-- Categories will be populated here -->
       </div>
       <button id="add-category-btn" class="btn btn-small">✚ Категория</button>
     </div>
 
-    <!-- Main Content -->
     <main class="main-content">
-      <!-- Notes List -->
       <section class="notes-list-section">
         <div class="notes-list" id="notes-list">
-          <!-- Notes will be populated here -->
         </div>
       </section>
 
-      <!-- Note Details -->
       <section class="note-details-section">
         <div class="note-details" id="note-details">
           <div class="note-details-placeholder">
@@ -58,8 +47,6 @@
       </section>
     </main>
   </div>
-
-  <!-- Add/Edit Note Modal -->
   <div id="note-modal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -100,7 +87,6 @@
     </div>
   </div>
 
-  <!-- Add Category Modal -->
   <div id="category-modal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -120,7 +106,6 @@
     </div>
   </div>
 
-  <!-- Move to Category Modal -->
   <div id="move-category-modal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -131,7 +116,6 @@
         <div class="form-group">
           <label for="move-category-select">Выберите категорию:</label>
           <select id="move-category-select" class="form-input">
-            <!-- Categories will be populated here -->
           </select>
         </div>
       </div>
@@ -141,8 +125,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Settings Modal -->
   <div id="settings-modal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -150,7 +132,6 @@
         <button id="close-settings-modal" class="close-btn">&times;</button>
       </div>
       <div class="modal-body">
-        <!-- Theme Settings -->
         <div class="settings-section">
           <h4 class="settings-section-title">Оформление</h4>
           <div class="form-group">
@@ -162,11 +143,9 @@
           </div>
         </div>
 
-        <!-- Data Management -->
         <div class="settings-section">
           <h4 class="settings-section-title">Управление данными</h4>
           
-          <!-- Export Section -->
           <div class="form-group">
             <label>Экспорт данных:</label>
             <div class="export-import-controls">
@@ -177,7 +156,6 @@
             </div>
           </div>
 
-          <!-- Import Section -->
           <div class="form-group">
             <label>Импорт данных:</label>
             <div class="export-import-controls">
@@ -189,7 +167,6 @@
             </div>
           </div>
 
-          <!-- Backup Section -->
           <div class="form-group">
             <label>Резервное копирование:</label>
             <div class="export-import-controls">
@@ -205,7 +182,6 @@
           </div>
         </div>
 
-        <!-- Statistics -->
         <div class="settings-section">
           <h4 class="settings-section-title">Статистика</h4>
           <div class="stats-grid">

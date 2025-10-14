@@ -15,7 +15,6 @@ class ModalManager {
     const passwordInput = document.getElementById('note-password');
     const contentTextarea = document.getElementById('note-content');
     
-    // Заполняем категории
     categorySelect.innerHTML = '<option value="all">Все</option>';
     this.dataManager.getCategories().forEach(category => {
       if (category !== 'Все' && category !== 'Избранное' && category !== 'Архив') {
@@ -63,7 +62,6 @@ class ModalManager {
       return;
     }
     
-    // Определяем правильную категорию
     let selectedCategory = 'Заметки';
     if (category !== 'all') {
       selectedCategory = category;
@@ -81,12 +79,10 @@ class ModalManager {
     };
     
     if (this.currentEditingNote) {
-      // Обновляем существующую заметку
       Object.assign(this.currentEditingNote, noteData);
       this.dataManager.updateNote(this.currentEditingNote);
       this.uiManager.showNotification('Заметка обновлена');
     } else {
-      // Создаем новую заметку
       noteData.id = this.dataManager.generateId();
       this.dataManager.addNote(noteData);
       this.uiManager.showNotification('Заметка создана');
@@ -121,7 +117,6 @@ class ModalManager {
 
   async deleteCategory(category) {
     if (confirm(`Удалить категорию "${category}"? Заметки будут перемещены в "Заметки"`)) {
-      // Перемещаем заметки в категорию "Заметки"
       const notes = this.dataManager.getNotes();
       notes.forEach(note => {
         if (note.category === category) {
@@ -244,7 +239,6 @@ class ModalManager {
   }
 }
 
-// Экспортируем для использования в других модулях
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = ModalManager;
 } else {

@@ -8,24 +8,20 @@ class DataManager {
     try {
       let data = [];
       
-      // Используем Electron API для загрузки данных
       if (window.electronAPI && window.electronAPI.loadData) {
         const result = await window.electronAPI.loadData();
         if (result.success) {
           data = result.data;
         } else {
           console.error('Ошибка загрузки через Electron API:', result.error);
-          // Fallback к fetch если Electron API недоступен
           const response = await fetch('./data.json');
           data = await response.json();
         }
       } else {
-        // Fallback к fetch если Electron API недоступен
         const response = await fetch('./data.json');
         data = await response.json();
       }
       
-      // Преобразуем данные в новый формат
       this.notes = data.map(item => ({
         id: item.id,
         title: item.name,
@@ -50,7 +46,6 @@ class DataManager {
     const lowerTitle = title.toLowerCase();
     const lowerContent = content.toLowerCase();
     
-    // Проверяем пользовательские категории
     for (const category of this.categories) {
       if (category !== 'Все' && category !== 'Избранное' && category !== 'Архив') {
         if (lowerTitle.includes(category.toLowerCase()) || lowerContent.includes(category.toLowerCase())) {
@@ -59,7 +54,6 @@ class DataManager {
       }
     }
     
-    // Стандартная логика определения категории
     if (lowerTitle.includes('git') || lowerContent.includes('git')) return 'Команды';
     if (lowerTitle.includes('sql') || lowerContent.includes('sql')) return 'Команды';
     if (lowerTitle.includes('пароль') || lowerTitle.includes('логин') || 
@@ -70,21 +64,18 @@ class DataManager {
 
   async loadCategories() {
     try {
-      // Используем Electron API для загрузки категорий
       if (window.electronAPI && window.electronAPI.loadCategories) {
         const result = await window.electronAPI.loadCategories();
         if (result.success) {
           this.categories = result.data;
         } else {
           console.error('Ошибка загрузки категорий через Electron API:', result.error);
-          // Fallback к localStorage если Electron API недоступен
           const savedCategories = localStorage.getItem('categories');
           if (savedCategories) {
             this.categories = JSON.parse(savedCategories);
           }
         }
       } else {
-        // Fallback к localStorage если Electron API недоступен
         const savedCategories = localStorage.getItem('categories');
         if (savedCategories) {
           this.categories = JSON.parse(savedCategories);
@@ -92,16 +83,13 @@ class DataManager {
       }
     } catch (error) {
       console.error('Ошибка загрузки категорий:', error);
-      // Оставляем дефолтные категории
     }
   }
 
   async saveCategories() {
     try {
-      // Сохраняем в localStorage для быстрого доступа
       localStorage.setItem('categories', JSON.stringify(this.categories));
       
-      // Сохраняем в файл category.json через Electron API
       if (window.electronAPI && window.electronAPI.saveCategories) {
         const result = await window.electronAPI.saveCategories(this.categories);
         if (!result.success) {
@@ -115,12 +103,9 @@ class DataManager {
 
   async saveData() {
     try {
-      // Сохраняем в localStorage для быстрого доступа
       localStorage.setItem('notes', JSON.stringify(this.notes));
       
-      // Сохраняем в файл data.json через Electron API
       if (window.electronAPI && window.electronAPI.saveData) {
-        // Преобразуем данные обратно в формат data.json
         const dataToSave = this.notes.map(note => ({
           name: note.title,
           content: note.content,
@@ -131,7 +116,7 @@ class DataManager {
           favorite: note.isFavorite,
           login: note.login || "",
           password: note.password || "",
-          category: note.category, // Сохраняем категорию
+          category: note.category,
           isArchived: note.isArchived || false,
           createdAt: note.createdAt
         }));
@@ -194,7 +179,6 @@ class DataManager {
   }
 }
 
-// Экспортируем для использования в других модулях
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = DataManager;
 } else {

@@ -6,29 +6,24 @@ class EventManager {
   }
 
   setupEventListeners() {
-    // Переключение темы (исправленный ID)
     document.getElementById('settings-btn').addEventListener('click', () => {
       this.uiManager.toggleTheme();
     });
 
-    // Поиск
     document.getElementById('search-input').addEventListener('input', (e) => {
       this.uiManager.searchNotes(e.target.value);
     });
 
-    // Кнопки в заголовке
     document.getElementById('add-note-btn').addEventListener('click', () => {
       this.modalManager.showNoteModal();
     });
 
-    // ✅ Кнопка DevTools
     document.getElementById('devtools-btn').addEventListener('click', async () => {
       if (window.electronAPI && window.electronAPI.openDevTools) {
         try {
           const result = await window.electronAPI.openDevTools();
           if (!result.success) {
             console.error('Failed to open DevTools:', result.error);
-            // Fallback - пробуем открыть через F12
             document.dispatchEvent(new KeyboardEvent('keydown', {
               key: 'F12',
               code: 'F12',
@@ -39,16 +34,13 @@ class EventManager {
           console.error('Error opening DevTools:', error);
         }
       } else {
-        // Если electron API недоступен, показываем инструкцию
         alert('Нажмите F12 для открытия DevTools или откройте через контекстное меню');
       }
     });
 
-    // ✅ EVENT DELEGATION для списка заметок (вместо множества addEventListener)
     document.getElementById('notes-list').addEventListener('click', (e) => {
-      // Обработка кнопки избранного
       if (e.target.matches('[data-action="toggle-favorite"]')) {
-        e.stopPropagation(); // Предотвращаем выбор заметки
+        e.stopPropagation();
         const noteId = e.target.dataset.noteId;
         if (window.notesApp) {
           window.notesApp.toggleFavorite(noteId);
@@ -56,7 +48,6 @@ class EventManager {
         return;
       }
 
-      // Обработка клика по заметке (выбор заметки)
       const noteItem = e.target.closest('.note-item');
       if (noteItem && noteItem.dataset.noteId) {
         const noteId = noteItem.dataset.noteId;
@@ -67,7 +58,6 @@ class EventManager {
       }
     });
 
-    // ✅ EVENT DELEGATION для деталей заметки (вместо inline onclick)
     document.getElementById('note-details').addEventListener('click', (e) => {
       const action = e.target.dataset.action;
       if (!action) return;
@@ -101,7 +91,6 @@ class EventManager {
         case 'copy-to-clipboard':
           const textToCopy = e.target.dataset.text;
           if (textToCopy && window.notesApp) {
-            // ✅ Декодируем HTML entities обратно в обычный текст
             const decodedText = this.decodeHtml(textToCopy);
             window.notesApp.copyToClipboard(decodedText);
           }
@@ -121,12 +110,10 @@ class EventManager {
       }
     });
 
-    // Категории
     document.getElementById('add-category-btn').addEventListener('click', () => {
       this.modalManager.showCategoryModal();
     });
 
-    // Модальные окна
     document.getElementById('close-modal').addEventListener('click', () => {
       this.modalManager.hideNoteModal();
     });
@@ -163,12 +150,10 @@ class EventManager {
       this.modalManager.hideMoveModal();
     });
 
-    // Пароль в модальном окне
     document.getElementById('toggle-password').addEventListener('click', () => {
       this.modalManager.togglePasswordVisibility();
     });
 
-    // Закрытие модальных окон по клику вне их
     window.addEventListener('click', (e) => {
       if (e.target.classList.contains('modal')) {
         this.modalManager.hideNoteModal();
@@ -177,31 +162,26 @@ class EventManager {
       }
     });
 
-    // Горячие клавиши
     this.setupKeyboardShortcuts();
   }
 
   setupKeyboardShortcuts() {
     document.addEventListener('keydown', (e) => {
-      // Ctrl/Cmd + N - новая заметка
       if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
         e.preventDefault();
         this.modalManager.showNoteModal();
       }
       
-      // Ctrl/Cmd + F - фокус на поиск
       if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
         e.preventDefault();
         document.getElementById('search-input').focus();
       }
       
-      // Ctrl/Cmd + T - переключить тему
       if ((e.ctrlKey || e.metaKey) && e.key === 't') {
         e.preventDefault();
         this.uiManager.toggleTheme();
       }
       
-      // Escape - закрыть модальные окна
       if (e.key === 'Escape') {
         this.modalManager.hideNoteModal();
         this.modalManager.hideCategoryModal();
@@ -211,7 +191,6 @@ class EventManager {
   }
 
   setupContextMenuListeners() {
-    // Слушаем действия из контекстного меню
     if (window.electronAPI && window.electronAPI.onTriggerAction) {
       window.electronAPI.onTriggerAction((action) => {
         switch (action) {
@@ -253,7 +232,6 @@ class EventManager {
           this.uiManager.showNotification('Ошибка экспорта данных', 'error');
         }
       } else {
-        // Fallback для браузера
         const dataStr = JSON.stringify(exportData, null, 2);
         const dataBlob = new Blob([dataStr], { type: 'application/json' });
         const url = URL.createObjectURL(dataBlob);
@@ -278,7 +256,6 @@ class EventManager {
           const data = result.data;
           
           if (data.notes && Array.isArray(data.notes)) {
-            // Импортируем заметки
             data.notes.forEach(note => {
               if (!this.dataManager.getNotes().find(n => n.id === note.id)) {
                 this.dataManager.addNote(note);
@@ -287,7 +264,6 @@ class EventManager {
           }
           
           if (data.categories && Array.isArray(data.categories)) {
-            // Импортируем категории
             data.categories.forEach(category => {
               this.dataManager.addCategory(category);
             });
@@ -304,7 +280,6 @@ class EventManager {
           this.uiManager.showNotification('Ошибка импорта данных', 'error');
         }
       } else {
-        // Fallback для браузера
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.json';
@@ -345,7 +320,6 @@ class EventManager {
     }
   }
 
-  // ✅ Метод для декодирования HTML entities обратно в обычный текст
   decodeHtml(html) {
     const txt = document.createElement('textarea');
     txt.innerHTML = html;
@@ -353,7 +327,6 @@ class EventManager {
   }
 }
 
-// Экспортируем для использования в других модулях
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = EventManager;
 } else {

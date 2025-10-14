@@ -8,12 +8,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveCategories: (categories) => ipcRenderer.invoke('save-categories', categories),
   loadCategories: () => ipcRenderer.invoke('load-categories'),
   
-  // ✅ API для открытия DevTools
   openDevTools: () => ipcRenderer.invoke('open-devtools'),
   
-  // Слушаем действия из контекстного меню
   onTriggerAction: (callback) => ipcRenderer.on('trigger-action', (event, action) => callback(action)),
   
-  // Удаляем слушатель
   removeTriggerAction: () => ipcRenderer.removeAllListeners('trigger-action')
 });

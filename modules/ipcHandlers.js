@@ -9,14 +9,11 @@ class IPCHandlers {
   }
 
   setupHandlers() {
-    // Обработчики для работы с файлами
     ipcMain.handle('save-data', async (event, data) => {
       try {
-        // Используем пользовательскую папку данных вместо папки приложения
         const userDataPath = this.app.getPath('userData');
         const dataPath = path.join(userDataPath, 'data.json');
         
-        // Создаем папку если её нет
         const userDataDir = path.dirname(dataPath);
         if (!fs.existsSync(userDataDir)) {
           fs.mkdirSync(userDataDir, { recursive: true });
@@ -32,7 +29,6 @@ class IPCHandlers {
 
     ipcMain.handle('load-data', async () => {
       try {
-        // Сначала пробуем загрузить из пользовательской папки данных
         const userDataPath = this.app.getPath('userData');
         const userDataFilePath = path.join(userDataPath, 'data.json');
         
@@ -41,10 +37,8 @@ class IPCHandlers {
           return { success: true, data: JSON.parse(data) };
         }
         
-        // Если файла нет в пользовательской папке, пробуем загрузить из ресурсов приложения (для первой загрузки)
         let appDataPath = path.join(__dirname, '..', 'data.json');
         
-        // В production режиме файл может быть в resources
         if (!fs.existsSync(appDataPath)) {
           appDataPath = path.join(process.resourcesPath, 'data.json');
         }
@@ -53,7 +47,6 @@ class IPCHandlers {
           const data = fs.readFileSync(appDataPath, 'utf8');
           const parsedData = JSON.parse(data);
           
-          // Копируем данные в пользовательскую папку для будущих изменений
           const userDataDir = path.dirname(userDataFilePath);
           if (!fs.existsSync(userDataDir)) {
             fs.mkdirSync(userDataDir, { recursive: true });
@@ -106,13 +99,11 @@ class IPCHandlers {
       }
     });
 
-    // Обработчики для работы с категориями
     ipcMain.handle('save-categories', async (event, categories) => {
       try {
         const userDataPath = this.app.getPath('userData');
         const categoriesPath = path.join(userDataPath, 'category.json');
         
-        // Создаем папку если её нет
         const userDataDir = path.dirname(categoriesPath);
         if (!fs.existsSync(userDataDir)) {
           fs.mkdirSync(userDataDir, { recursive: true });
@@ -136,7 +127,6 @@ class IPCHandlers {
           return { success: true, data: JSON.parse(data) };
         }
         
-        // Если файла нет, создаем с дефолтными категориями
         const defaultCategories = ['Все', 'Пароли', 'Команды', 'Заметки', 'Избранное', 'Архив'];
         
         const userDataDir = path.dirname(userCategoriesPath);
@@ -152,7 +142,6 @@ class IPCHandlers {
       }
     });
 
-    // ✅ Обработчик для открытия DevTools
     ipcMain.handle('open-devtools', async () => {
       try {
         const BrowserWindow = require('electron').BrowserWindow;

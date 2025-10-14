@@ -124,7 +124,6 @@ class UIManager {
     this.filteredNotes.forEach(note => {
       const noteElement = document.createElement('div');
       noteElement.className = `note-item ${note.id === this.currentNote?.id ? 'selected' : ''}`;
-      // ✅ Добавляем data-атрибуты для Event Delegation
       noteElement.dataset.noteId = note.id;
       noteElement.innerHTML = `
         <div class="note-header">
@@ -140,28 +139,22 @@ class UIManager {
           <span>${this.formatDate(note.createdAt)}</span>
         </div>
       `;
-      // ✅ УБИРАЕМ addEventListener - больше не нужно!
       container.appendChild(noteElement);
     });
   }
 
   selectNote(note) {
-    // ✅ ОПТИМИЗАЦИЯ: Обновляем только классы selected, без полного перерендера!
-    
-    // Убираем selected у предыдущей заметки
     const previousSelected = document.querySelector('.note-item.selected');
     if (previousSelected) {
       previousSelected.classList.remove('selected');
     }
     
-    // Добавляем selected к новой заметке
     const newSelected = document.querySelector(`[data-note-id="${note.id}"]`);
     if (newSelected) {
       newSelected.classList.add('selected');
     }
     
     this.currentNote = note;
-    // ✅ Рендерим только детали, не весь список!
     this.renderNoteDetails();
   }
 
@@ -254,7 +247,6 @@ class UIManager {
       this.showNotification('Скопировано в буфер обмена');
     } catch (err) {
       console.error('Ошибка копирования:', err);
-      // Fallback для старых браузеров
       const textArea = document.createElement('textarea');
       textArea.value = text;
       document.body.appendChild(textArea);
@@ -318,7 +310,6 @@ class UIManager {
     this.filteredNotes = notes;
   }
 
-  // ✅ Метод для экранирования HTML символов в data-атрибутах
   escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
@@ -326,7 +317,6 @@ class UIManager {
   }
 }
 
-// Экспортируем для использования в других модулях
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = UIManager;
 } else {
