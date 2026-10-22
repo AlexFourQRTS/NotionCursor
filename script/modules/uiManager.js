@@ -1,7 +1,6 @@
 class UIManager {
   constructor(dataManager) {
     this.dataManager = dataManager;
-    this.currentCategory = 'Все';
     this.currentNote = null;
     this.isHidden = false;
     this.filteredNotes = [];
@@ -43,60 +42,16 @@ class UIManager {
     this.applyTheme();
   }
 
-  renderCategories() {
-    const container = document.getElementById('categories-list');
-    container.innerHTML = '';
-    
-    this.dataManager.getCategories().forEach(category => {
-      const categoryElement = document.createElement('div');
-      categoryElement.className = `category-item ${category === this.currentCategory ? 'active' : ''}`;
-      categoryElement.innerHTML = `
-        <span>${this.getCategoryIcon(category)}</span>
-        <span>${category}</span>
-        ${category !== 'Все' && category !== 'Избранное' && category !== 'Архив' ? 
-          `<button class="delete-category" onclick="notesApp.deleteCategory('${category}')">&times;</button>` : ''}
-      `;
-      categoryElement.addEventListener('click', () => this.selectCategory(category));
-      container.appendChild(categoryElement);
-    });
-  }
-
-  getCategoryIcon(category) {
-    const icons = {
-        'Все': '⌘',
-      'Пароли': '⚙︎',
-      'Команды': '⚡',
-      'Заметки': '📝',
-      'Избранное': '★',
-      'Архив': '⊞'
-    };
-    return icons[category] || '🗄︎';
-  }
 
 
 
 
-  selectCategory(category) {
-    this.currentCategory = category;
-    this.renderCategories();
-    this.filterNotes();
-    this.renderNotes();
-  }
+
 
   filterNotes() {
     const notes = this.dataManager.getNotes();
     
-    if (this.currentCategory === 'Все') {
-      this.filteredNotes = notes.filter(note => !note.isArchived);
-    } else if (this.currentCategory === 'Избранное') {
-      this.filteredNotes = notes.filter(note => note.isFavorite && !note.isArchived);
-    } else if (this.currentCategory === 'Архив') {
-      this.filteredNotes = notes.filter(note => note.isArchived);
-    } else {
-      this.filteredNotes = notes.filter(note => 
-        note.category === this.currentCategory && !note.isArchived
-      );
-    }
+    this.filteredNotes = notes;
   }
 
   searchNotes(query) {
@@ -106,7 +61,7 @@ class UIManager {
       const notes = this.dataManager.getNotes();
       this.filteredNotes = notes.filter(note => {
         const searchText = `${note.title} ${note.content} ${note.login}`.toLowerCase();
-        return searchText.includes(query.toLowerCase()) && !note.isArchived;
+        return searchText.includes(query.toLowerCase());
       });
     }
     this.renderNotes();
@@ -135,7 +90,6 @@ class UIManager {
         </div>
         <p class="note-preview">${this.truncateText(note.content, 100)}</p>
         <div class="note-meta">
-          <span>${note.category}</span>
           <span>${this.formatDate(note.createdAt)}</span>
         </div>
       `;
@@ -183,7 +137,6 @@ class UIManager {
             </div>
             <div class="note-details-actions">
               <button class="btn btn-secondary" data-action="edit-note"> ✎  Редактировать</button>
-              <button class="btn btn-secondary" data-action="show-move-modal"> ➤ Переместить</button>
               <button class="btn btn-danger" data-action="delete-note"> ● Удалить</button>
             </div>
           </div>
@@ -216,12 +169,6 @@ class UIManager {
             <span>${this.currentNote.content}</span>
             <button class="copy-btn" data-action="copy-to-clipboard" data-text="${this.escapeHtml(this.currentNote.content)}">📋</button>
           </div>
-        </div>
-        
-        <div class="note-bottom-actions">
-          <button class="btn btn-secondary" data-action="toggle-archive">
-            ${this.currentNote.isArchived ? '✉︎ Разархивировать' : '☰ Архивировать'}
-          </button>
         </div>
       </div>
     `;

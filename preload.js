@@ -5,8 +5,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   loadData: () => ipcRenderer.invoke('load-data'),
   exportData: (data) => ipcRenderer.invoke('export-data', data),
   importData: () => ipcRenderer.invoke('import-data'),
-  saveCategories: (categories) => ipcRenderer.invoke('save-categories', categories),
-  loadCategories: () => ipcRenderer.invoke('load-categories'),
   
   openDevTools: () => ipcRenderer.invoke('open-devtools'),
   

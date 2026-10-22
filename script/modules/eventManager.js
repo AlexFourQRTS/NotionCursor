@@ -18,6 +18,14 @@ class EventManager {
       this.modalManager.showNoteModal();
     });
 
+    document.getElementById('export-btn').addEventListener('click', () => {
+      this.exportData();
+    });
+
+    document.getElementById('import-btn').addEventListener('click', () => {
+      this.importData();
+    });
+
     document.getElementById('devtools-btn').addEventListener('click', async () => {
       if (window.electronAPI && window.electronAPI.openDevTools) {
         try {
@@ -76,12 +84,6 @@ class EventManager {
           }
           break;
 
-        case 'show-move-modal':
-          if (window.notesApp) {
-            window.notesApp.showMoveModal();
-          }
-          break;
-
         case 'delete-note':
           if (window.notesApp) {
             window.notesApp.deleteNote();
@@ -101,29 +103,11 @@ class EventManager {
             window.notesApp.toggleFieldVisibility(e.target);
           }
           break;
-
-        case 'toggle-archive':
-          if (window.notesApp) {
-            window.notesApp.toggleArchive();
-          }
-          break;
       }
-    });
-
-    document.getElementById('add-category-btn').addEventListener('click', () => {
-      this.modalManager.showCategoryModal();
     });
 
     document.getElementById('close-modal').addEventListener('click', () => {
       this.modalManager.hideNoteModal();
-    });
-
-    document.getElementById('close-category-modal').addEventListener('click', () => {
-      this.modalManager.hideCategoryModal();
-    });
-
-    document.getElementById('close-move-modal').addEventListener('click', () => {
-      this.modalManager.hideMoveModal();
     });
 
     document.getElementById('save-note').addEventListener('click', async () => {
@@ -134,22 +118,6 @@ class EventManager {
       this.modalManager.hideNoteModal();
     });
 
-    document.getElementById('save-category').addEventListener('click', async () => {
-      await this.modalManager.saveCategory();
-    });
-
-    document.getElementById('cancel-category').addEventListener('click', () => {
-      this.modalManager.hideCategoryModal();
-    });
-
-    document.getElementById('confirm-move').addEventListener('click', async () => {
-      await this.modalManager.moveToCategory();
-    });
-
-    document.getElementById('cancel-move').addEventListener('click', () => {
-      this.modalManager.hideMoveModal();
-    });
-
     document.getElementById('toggle-password').addEventListener('click', () => {
       this.modalManager.togglePasswordVisibility();
     });
@@ -157,8 +125,6 @@ class EventManager {
     window.addEventListener('click', (e) => {
       if (e.target.classList.contains('modal')) {
         this.modalManager.hideNoteModal();
-        this.modalManager.hideCategoryModal();
-        this.modalManager.hideMoveModal();
       }
     });
 
@@ -184,8 +150,6 @@ class EventManager {
       
       if (e.key === 'Escape') {
         this.modalManager.hideNoteModal();
-        this.modalManager.hideCategoryModal();
-        this.modalManager.hideMoveModal();
       }
     });
   }
@@ -217,10 +181,8 @@ class EventManager {
   async exportData() {
     try {
       const notes = this.dataManager.getNotes();
-      const categories = this.dataManager.getCategories();
       const exportData = {
         notes,
-        categories,
         exportDate: new Date().toISOString()
       };
       
@@ -263,18 +225,10 @@ class EventManager {
             });
           }
           
-          if (data.categories && Array.isArray(data.categories)) {
-            data.categories.forEach(category => {
-              this.dataManager.addCategory(category);
-            });
-          }
-          
           await this.dataManager.saveData();
-          await this.dataManager.saveCategories();
           
           this.uiManager.filterNotes();
           this.uiManager.renderNotes();
-          this.uiManager.renderCategories();
           this.uiManager.showNotification('Данные импортированы');
         } else if (!result.canceled) {
           this.uiManager.showNotification('Ошибка импорта данных', 'error');
@@ -297,18 +251,10 @@ class EventManager {
               });
             }
             
-            if (data.categories && Array.isArray(data.categories)) {
-              data.categories.forEach(category => {
-                this.dataManager.addCategory(category);
-              });
-            }
-            
             await this.dataManager.saveData();
-            await this.dataManager.saveCategories();
             
             this.uiManager.filterNotes();
             this.uiManager.renderNotes();
-            this.uiManager.renderCategories();
             this.uiManager.showNotification('Данные импортированы');
           }
         };

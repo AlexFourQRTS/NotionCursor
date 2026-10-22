@@ -18,7 +18,10 @@
     "passwords",
     "desktop"
   ],
-  "author": "Your Name",
+  "author": {
+    "name": "Oleksandr Maliuk",
+    "email": "xvergox@gmail.com"
+  },
   "license": "MIT",
   "devDependencies": {
     "electron": "^34.2.0",
@@ -42,10 +45,6 @@
       {
         "from": "data.json",
         "to": "data.json"
-      },
-      {
-        "from": "category.json",
-        "to": "category.json"
       }
     ],
     "win": {
@@ -57,11 +56,14 @@
       "icon": "icon.png"
     },
     "linux": {
-      "target": "AppImage",
-      "icon": "icon.png"
+      "target": "deb",
+      "icon": "icon.png",
+      "category": "Utility",
+      "maintainer": "Oleksandr Maliuk <xvergox@gmail.com>"
     }
   },
   "dependencies": {
     "xlsx": "^0.18.5"
-  }
+  },
+  "homepage": "https://github.com/your-username/notes-app"
 }

@@ -10,7 +10,6 @@ class NotesApp {
 
   async init() {
     this.uiManager.loadTheme();
-    await this.dataManager.loadCategories();
     
     const notes = await this.dataManager.loadData();
     this.uiManager.setFilteredNotes(notes);
@@ -18,7 +17,6 @@ class NotesApp {
     this.eventManager.setupEventListeners();
     this.eventManager.setupContextMenuListeners();
     
-    this.uiManager.renderCategories();
     this.uiManager.renderNotes();
   }
 
@@ -53,26 +51,8 @@ class NotesApp {
     }
   }
 
-  async toggleArchive() {
-    const currentNote = this.uiManager.getCurrentNote();
-    if (currentNote) {
-      currentNote.isArchived = !currentNote.isArchived;
-      this.uiManager.renderNotes();
-      this.uiManager.renderNoteDetails();
-      await this.dataManager.saveData();
-      
-      const action = currentNote.isArchived ? 'архивирована' : 'разархивирована';
-      this.uiManager.showNotification(`Заметка "${currentNote.title}" ${action}`);
-    }
-  }
 
-  async saveCategory() {
-    await this.modalManager.saveCategory();
-  }
 
-  async deleteCategory(category) {
-    await this.modalManager.deleteCategory(category);
-  }
 
   showNoteModal(note = null) {
     this.modalManager.showNoteModal(note);
@@ -82,25 +62,10 @@ class NotesApp {
     this.modalManager.hideNoteModal();
   }
 
-  showCategoryModal() {
-    this.modalManager.showCategoryModal();
-  }
 
-  hideCategoryModal() {
-    this.modalManager.hideCategoryModal();
-  }
 
-  showMoveModal() {
-    this.modalManager.showMoveModal();
-  }
 
-  hideMoveModal() {
-    this.modalManager.hideMoveModal();
-  }
 
-  async moveToCategory() {
-    await this.modalManager.moveToCategory();
-  }
 
   toggleFieldVisibility(btn) {
     this.uiManager.toggleFieldVisibility(btn);

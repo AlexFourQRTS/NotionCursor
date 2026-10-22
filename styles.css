@@ -135,6 +135,11 @@ body {
   color: var(--text-muted);
 }
 
+.header-left-btn {
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
 .header-actions {
   display: flex;
   gap: 0.5rem;

@@ -16,21 +16,17 @@
 <body>
   <div class="app-container">
     <header class="header">
+      <button id="devtools-btn" class="theme-toggle header-left-btn" title="Открыть DevTools (F12)">🔧</button>
       <div class="search-container">
         <input type="text" id="search-input" placeholder=" ⌕ Поиск по заметкам..." class="search-input">
       </div>
       <div class="header-actions">
-        <button id="devtools-btn" class="theme-toggle" title="Открыть DevTools (F12)">🔧</button>
+        <button id="export-btn" class="theme-toggle" title="Выгрузить данные">📤</button>
+        <button id="import-btn" class="theme-toggle" title="Загрузить данные">📥</button>
         <button id="settings-btn" class="theme-toggle" title="Настройки">⚙️</button>
         <button id="add-note-btn" class="btn btn-primary">✚ Заметка</button>
       </div>
     </header>
-
-    <div class="categories-container">
-      <div class="categories-list" id="categories-list">
-      </div>
-      <button id="add-category-btn" class="btn btn-small">✚ Категория</button>
-    </div>
 
     <main class="main-content">
       <section class="notes-list-section">
@@ -59,12 +55,6 @@
           <input type="text" id="note-title" class="form-input" placeholder="Введите название заметки">
         </div>
         <div class="form-group">
-          <label for="note-category">Категория:</label>
-          <select id="note-category" class="form-input">
-            <option value="all">Все</option>
-          </select>
-        </div>
-        <div class="form-group">
           <label for="note-login">Логин (опционально):</label>
           <input type="text" id="note-login" class="form-input" placeholder="Введите логин">
         </div>
@@ -87,44 +77,6 @@
     </div>
   </div>
 
-  <div id="category-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Новая категория</h3>
-        <button id="close-category-modal" class="close-btn">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="category-name">Название категории:</label>
-          <input type="text" id="category-name" class="form-input" placeholder="Введите название категории">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button id="save-category" class="btn btn-primary">Сохранить</button>
-        <button id="cancel-category" class="btn btn-secondary">Отмена</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="move-category-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Переместить в категорию</h3>
-        <button id="close-move-modal" class="close-btn">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="move-category-select">Выберите категорию:</label>
-          <select id="move-category-select" class="form-input">
-          </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button id="confirm-move" class="btn ">Переместить</button>
-        <button id="cancel-move" class="btn ">Отмена</button>
-      </div>
-    </div>
-  </div>
   <div id="settings-modal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -196,10 +148,6 @@
             <div class="stat-item">
               <span class="stat-label">Избранные:</span>
               <span id="favorite-notes-count" class="stat-value">0</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Категорий:</span>
-              <span id="categories-count" class="stat-value">0</span>
             </div>
           </div>
         </div>

@@ -99,49 +99,6 @@ class IPCHandlers {
       }
     });
 
-    ipcMain.handle('save-categories', async (event, categories) => {
-      try {
-        const userDataPath = this.app.getPath('userData');
-        const categoriesPath = path.join(userDataPath, 'category.json');
-        
-        const userDataDir = path.dirname(categoriesPath);
-        if (!fs.existsSync(userDataDir)) {
-          fs.mkdirSync(userDataDir, { recursive: true });
-        }
-        
-        fs.writeFileSync(categoriesPath, JSON.stringify(categories, null, 2));
-        return { success: true };
-      } catch (error) {
-        console.error('Error saving categories:', error);
-        return { success: false, error: error.message };
-      }
-    });
-
-    ipcMain.handle('load-categories', async () => {
-      try {
-        const userDataPath = this.app.getPath('userData');
-        const userCategoriesPath = path.join(userDataPath, 'category.json');
-        
-        if (fs.existsSync(userCategoriesPath)) {
-          const data = fs.readFileSync(userCategoriesPath, 'utf8');
-          return { success: true, data: JSON.parse(data) };
-        }
-        
-        const defaultCategories = ['Все', 'Пароли', 'Команды', 'Заметки', 'Избранное', 'Архив'];
-        
-        const userDataDir = path.dirname(userCategoriesPath);
-        if (!fs.existsSync(userDataDir)) {
-          fs.mkdirSync(userDataDir, { recursive: true });
-        }
-        fs.writeFileSync(userCategoriesPath, JSON.stringify(defaultCategories, null, 2));
-        
-        return { success: true, data: defaultCategories };
-      } catch (error) {
-        console.error('Error loading categories:', error);
-        return { success: false, error: error.message };
-      }
-    });
-
     ipcMain.handle('open-devtools', async () => {
       try {
         const BrowserWindow = require('electron').BrowserWindow;
