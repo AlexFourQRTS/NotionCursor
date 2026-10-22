@@ -26,26 +26,6 @@ class EventManager {
       this.importData();
     });
 
-    document.getElementById('devtools-btn').addEventListener('click', async () => {
-      if (window.electronAPI && window.electronAPI.openDevTools) {
-        try {
-          const result = await window.electronAPI.openDevTools();
-          if (!result.success) {
-            console.error('Failed to open DevTools:', result.error);
-            document.dispatchEvent(new KeyboardEvent('keydown', {
-              key: 'F12',
-              code: 'F12',
-              keyCode: 123
-            }));
-          }
-        } catch (error) {
-          console.error('Error opening DevTools:', error);
-        }
-      } else {
-        alert('Нажмите F12 для открытия DevTools или откройте через контекстное меню');
-      }
-    });
-
     document.getElementById('notes-list').addEventListener('click', (e) => {
       if (e.target.matches('[data-action="toggle-favorite"]')) {
         e.stopPropagation();
@@ -210,26 +190,47 @@ class EventManager {
     }
   }
 
+  normalizeImportedNotes(data) {
+    const list = Array.isArray(data) ? data : (data && Array.isArray(data.notes) ? data.notes : []);
+    return list
+      .filter(item => item && (item.title || item.name))
+      .map(item => ({
+        id: item.id || this.dataManager.generateId(),
+        title: item.title || item.name,
+        content: item.content || '',
+        login: item.login || '',
+        password: item.password || '',
+        isFavorite: item.isFavorite ?? item.favorite ?? false,
+        isArchived: false,
+        createdAt: item.createdAt || new Date().toISOString()
+      }));
+  }
+
+  async applyImport(data) {
+    const incoming = this.normalizeImportedNotes(data);
+    const existingIds = new Set(this.dataManager.getNotes().map(n => n.id));
+    let added = 0;
+
+    incoming.forEach(note => {
+      if (!existingIds.has(note.id)) {
+        this.dataManager.addNote(note);
+        existingIds.add(note.id);
+        added++;
+      }
+    });
+
+    await this.dataManager.saveData();
+    this.uiManager.filterNotes();
+    this.uiManager.renderNotes();
+    this.uiManager.showNotification(`Импортировано заметок: ${added} из ${incoming.length}`);
+  }
+
   async importData() {
     try {
       if (window.electronAPI && window.electronAPI.importData) {
         const result = await window.electronAPI.importData();
         if (result.success) {
-          const data = result.data;
-          
-          if (data.notes && Array.isArray(data.notes)) {
-            data.notes.forEach(note => {
-              if (!this.dataManager.getNotes().find(n => n.id === note.id)) {
-                this.dataManager.addNote(note);
-              }
-            });
-          }
-          
-          await this.dataManager.saveData();
-          
-          this.uiManager.filterNotes();
-          this.uiManager.renderNotes();
-          this.uiManager.showNotification('Данные импортированы');
+          await this.applyImport(result.data);
         } else if (!result.canceled) {
           this.uiManager.showNotification('Ошибка импорта данных', 'error');
         }
@@ -240,22 +241,7 @@ class EventManager {
         input.onchange = async (e) => {
           const file = e.target.files[0];
           if (file) {
-            const text = await file.text();
-            const data = JSON.parse(text);
-            
-            if (data.notes && Array.isArray(data.notes)) {
-              data.notes.forEach(note => {
-                if (!this.dataManager.getNotes().find(n => n.id === note.id)) {
-                  this.dataManager.addNote(note);
-                }
-              });
-            }
-            
-            await this.dataManager.saveData();
-            
-            this.uiManager.filterNotes();
-            this.uiManager.renderNotes();
-            this.uiManager.showNotification('Данные импортированы');
+            await this.applyImport(JSON.parse(await file.text()));
           }
         };
         input.click();
